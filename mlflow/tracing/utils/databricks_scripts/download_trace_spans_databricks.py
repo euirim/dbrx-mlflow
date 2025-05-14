@@ -25,8 +25,6 @@ REQUEST_TIMEOUT = 120
 
 
 def download_trace(trace_id, databricks_host, databricks_auth_headers):
-    requests.packages.urllib3.add_stderr_logger()
-
     url_path = f"/api/3.0/mlflow/traces/{trace_id}/credentials-for-data-download"
     url = f"{databricks_host.rstrip('/')}{url_path}"
 
@@ -59,6 +57,10 @@ def download_trace(trace_id, databricks_host, databricks_auth_headers):
         logger.warning(f"Exception while downloading trace {trace_id}: {e}")
 
 
+def init_worker():
+    requests.packages.urllib3.add_stderr_logger()
+
+
 if __name__ == "__main__":
     databricks_host = sys.argv[1]
     databricks_auth_headers = json.loads(sys.argv[2])
@@ -73,7 +75,7 @@ if __name__ == "__main__":
         databricks_auth_headers=databricks_auth_headers,
     )
 
-    with Pool(processes=min(64, os.cpu_count() * 16)) as pool:
+    with Pool(processes=min(64, os.cpu_count() * 16), initializer=init_worker) as pool:
         trace_ids_and_data = pool.map(download_trace_partial, trace_ids)
 
     trace_ids_and_data = {
