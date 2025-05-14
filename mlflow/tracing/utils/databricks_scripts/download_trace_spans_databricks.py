@@ -71,7 +71,7 @@ if __name__ == "__main__":
         databricks_auth_headers=databricks_auth_headers,
     )
 
-    with Pool(processes=min(64, os.cpu_count() * 4)) as pool:
+    with Pool(processes=min(64, os.cpu_count() * 8)) as pool:
         trace_ids_and_data = pool.map(download_trace_partial, trace_ids)
 
     trace_ids_and_data = {
