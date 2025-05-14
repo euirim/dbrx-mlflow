@@ -25,6 +25,8 @@ REQUEST_TIMEOUT = 120
 
 
 def download_trace(trace_id, databricks_host, databricks_auth_headers):
+    requests.packages.urllib3.add_stderr_logger()
+
     url_path = f"/api/3.0/mlflow/traces/{trace_id}/credentials-for-data-download"
     url = f"{databricks_host.rstrip('/')}{url_path}"
 
