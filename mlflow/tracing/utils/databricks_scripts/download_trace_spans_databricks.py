@@ -5,6 +5,7 @@ import sys
 from functools import partial
 from multiprocessing import Pool
 
+import http.client
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -12,6 +13,8 @@ from urllib3.util.retry import Retry
 # Setup logger
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+http.client.HTTPConnection.debuglevel = 1
 
 TRANSIENT_FAILURE_RESPONSE_CODES = [
     408,  # Request Timeout
@@ -59,6 +62,7 @@ def download_trace(trace_id, databricks_host, databricks_auth_headers):
 
 def init_worker():
     requests.packages.urllib3.add_stderr_logger()
+    http.client.HTTPConnection.debuglevel = 1
 
 
 if __name__ == "__main__":
