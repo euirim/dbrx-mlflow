@@ -63,6 +63,10 @@ def download_trace(trace_id, databricks_host, databricks_auth_headers):
 def init_worker():
     requests.packages.urllib3.add_stderr_logger()
     http.client.HTTPConnection.debuglevel = 1
+    logging.basicConfig(level=logging.DEBUG)
+    logging.getLogger().setLevel(logging.DEBUG)
+    logging.getLogger("requests").setLevel(logging.DEBUG)
+    logging.getLogger("urllib3").setLevel(logging.DEBUG)
 
 
 if __name__ == "__main__":
